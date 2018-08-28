@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/balloonBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/coinBtn"
+        android:layout_alignStart="@+id/galleryBtn"
+        android:background="#00ff0000"
+        android:drawableTop="@drawable/balloon"
+        android:text="별풍선 구매하기"
+        tools:ignore="HardcodedText" />
+
+    <Button
+        android:id="@+id/cameraBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="170dp"
+        android:layout_marginStart="50dp"
+        android:background="#00ff0000"
+        android:drawableTop="@drawable/camera"
+        android:text="예술 카메라"
+        tools:ignore="HardcodedText" />
+
+    <Button
+        android:id="@+id/blogSearchBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/cameraBtn"
+        android:layout_marginBottom="290dp"
+        android:background="#00ff0000"
+        android:drawableTop="@drawable/blog"
+        android:text="블로그 검색"
+        tools:ignore="HardcodedText" />
+
+    <Button
+        android:id="@+id/galleryBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/cameraBtn"
+        android:layout_marginEnd="50dp"
+        android:background="#00ff0000"
+        android:drawableTop="@drawable/gallery"
+        android:text="예술 갤러리"
+        tools:ignore="HardcodedText" />
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="400dp"
+        android:background="#000000" />
+
+    <Button
+        android:id="@+id/coinBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/cameraBtn"
+        android:layout_marginBottom="50dp"
+        android:background="#00ff0000"
+        android:drawableTop="@drawable/coin"
+        android:text="토큰 보내기"
+        tools:ignore="HardcodedText" />
+
+</RelativeLayout>

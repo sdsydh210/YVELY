@@ -1,0 +1,48 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 27
+    buildToolsVersion '27.0.3'
+    defaultConfig {
+        applicationId "com.example.sdsyd.yvely"
+        minSdkVersion 18
+        targetSdkVersion 27
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    sourceSets { main { jni.srcDirs = ['src/main/jni', 'src/main/jni/'] } }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support:design:27.1.1'
+    implementation 'com.google.android.exoplayer:exoplayer:r2.3.1'
+    implementation 'net.butterflytv.utils:rtmp-client:3.0.1'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
+    implementation 'com.github.bumptech.glide:glide:4.6.1'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.6.1'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    implementation project(path: ':liveVideoBroadcasterSDK')
+    implementation 'org.tensorflow:tensorflow-android:1.9.0'
+    //토큰 관련 gradle 추가
+    implementation 'org.web3j:core:3.3.1-android'
+    implementation 'com.journeyapps:zxing-android-embedded:3.6.0'
+    implementation 'com.googlecode.json-simple:json-simple:1.1'
+    implementation group: 'com.google.zxing', name: 'core', version: '3.3.2'
+    implementation group: 'com.journeyapps', name: 'zxing-android-embedded', version: '3.6.0'
+    implementation 'com.android.support:multidex:1.0.3'
+    //라디오그룹
+    implementation 'com.github.worker8:RadioGroupPlus:v1.0.1'
+
+}

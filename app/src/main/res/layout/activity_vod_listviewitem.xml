@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".Broadcast.VodListviewitem">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:ignore="UselessParent">
+
+        <ImageView
+            android:id="@+id/vodImage"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_margin="8dp"
+            android:src="@drawable/ic_livelist"
+            android:visibility="visible"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/vodId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/vodImage"
+            android:layout_alignStart="@+id/vodTitle"
+            android:text="vodId"
+            android:textColor="#000000"
+            android:textSize="15sp"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:id="@+id/vodTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textColor="#000000"
+            android:layout_alignParentStart="true"
+            android:layout_alignTop="@+id/vodImage"
+            android:layout_marginStart="81dp"
+            android:text="vodTitle"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:id="@+id/vodUrl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:text="vodUrl"
+            android:visibility="gone"
+            tools:ignore="HardcodedText" />
+
+    </RelativeLayout>
+
+</LinearLayout>
