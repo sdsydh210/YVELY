@@ -38,7 +38,7 @@ public class VodAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        final int pos = position;
+
         final Context context = parent.getContext();
 
         if(convertView == null){
