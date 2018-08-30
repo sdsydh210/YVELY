@@ -44,5 +44,7 @@ dependencies {
     implementation 'com.android.support:multidex:1.0.3'
     //라디오그룹
     implementation 'com.github.worker8:RadioGroupPlus:v1.0.1'
+    //Lottie 애니메이션
+    implementation 'com.airbnb.android:lottie:2.3.0'
 
 }

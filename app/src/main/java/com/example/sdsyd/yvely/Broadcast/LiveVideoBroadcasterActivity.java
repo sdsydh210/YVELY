@@ -1,6 +1,7 @@
 package com.example.sdsyd.yvely.Broadcast;
 
 import android.Manifest;
+import android.animation.Animator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -38,6 +39,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.sdsyd.yvely.R;
 import com.example.sdsyd.yvely.Service.MyService;
 
@@ -88,8 +90,9 @@ public class LiveVideoBroadcasterActivity extends AppCompatActivity {
     boolean isBound = false; //서비스 중인지 확인하기 위해 선언
     long start; //방송 시작 시간을 정의, 썸네일, vod 를 저장할 때 시간과 이름으로 생성하기 위한 변수
     Intent broadcastingTitleIntent; //방송 제목을 받아오는 인텐트 변수
+    LottieAnimationView animationView;
 
-    public static final String TYPE_LIVE_LIST_SAVE = "LIVE_LIST_SAVE"; //
+    public static final String TYPE_LIVE_LIST_SAVE = "LIVE_LIST_SAVE";
     public static final String TYPE_CHAT_MSG = "CHAT_MSG";
 
     /** Defines callbacks for service binding, passed to bindService() */
@@ -151,13 +154,30 @@ public class LiveVideoBroadcasterActivity extends AppCompatActivity {
 
                         JSONObject json = new JSONObject(receiveMsg);
 
-                        if(json.get("MSG_TYPE").toString().equals(TYPE_CHAT_MSG)) {
+                        if(json.get("MSG_TYPE").toString().equals(TYPE_CHAT_MSG) && json.get("balloonType").toString().equals("1")) {
+                            String getId = json.get("id").toString();
+                            String getMsg = json.get("message").toString();
+
+                            adapter.addItem(getId + " : ","별풍선 " + getMsg + "개를 선물했습니다~!");
+                            adapter.notifyDataSetChanged();
+
+                            animationView.playAnimation(); //별풍선 애니메이션 플레이
+
+                            //별풍선 보내지 않았을 경우 처리하는 부분
+                        } else {
                             String getId = json.get("id").toString();
                             String getMsg = json.get("message").toString();
 
                             adapter.addItem(getId + " : ", getMsg);
                             adapter.notifyDataSetChanged();
                         }
+//                        if(json.get("MSG_TYPE").toString().equals(TYPE_CHAT_MSG)) {
+//                            String getId = json.get("id").toString();
+//                            String getMsg = json.get("message").toString();
+//
+//                            adapter.addItem(getId + " : ", getMsg);
+//                            adapter.notifyDataSetChanged();
+//                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -295,6 +315,7 @@ public class LiveVideoBroadcasterActivity extends AppCompatActivity {
         mBroadcastControlButton = (Button) findViewById(R.id.toggle_broadcasting); //방송 시작 버튼
         messageSendButton = findViewById(R.id.messageSend); //메세지 전송 버튼
         messageText = findViewById(R.id.messageText); //메세지 텍스트 뷰
+        animationView = findViewById(R.id.animation_view); //별풍선 애니메이션 뷰
 
         /*방송 시작 버튼 누르기 전에는 보이지 않다가
         * 시작을 하게 되면 보이게 하기 위해 방송 시작 전은 invisible 설정*/
@@ -331,7 +352,6 @@ public class LiveVideoBroadcasterActivity extends AppCompatActivity {
                     String userId = member.getString("inputId", null);
                     String sendMessage = messageText.getText().toString();
 
-
                     try {
 
                         json.put("MSG_TYPE", TYPE_CHAT_MSG);
@@ -343,7 +363,6 @@ public class LiveVideoBroadcasterActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
-
                     sendMessageToService(json.toString());
                     Log.d("SUNNY",  "======================방송자 화면에서 전송 버튼 클릭했을 때" + sendMessage);
                     adapter.addItem(userId + " : ", sendMessage);
@@ -354,6 +373,28 @@ public class LiveVideoBroadcasterActivity extends AppCompatActivity {
             }
         });
 
+        //별풍선 애니메이션 끝나면 사라지게 하기위해 이벤트 리스너를 설정
+        animationView.addAnimatorListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                animationView.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
 
     }/*onCreate*/
 

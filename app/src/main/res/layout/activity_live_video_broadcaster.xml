@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".LiveVideoBroadcasterActivity"
     android:id="@+id/root_layout">
 
@@ -79,7 +80,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="240dp"
+        android:layout_height="441dp"
         android:layout_gravity="bottom"
         android:orientation="vertical"
 
@@ -90,17 +91,17 @@
             android:id="@+id/liveChatListview"
             android:layout_width="match_parent"
             android:layout_height="130dp"
-            android:divider="@null"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true">
+            android:layout_above="@+id/messageText"
+            android:layout_alignParentStart="true"
+            android:divider="@null">
 
         </ListView>
 
         <EditText
             android:id="@+id/messageText"
-            android:layout_width="match_parent"
+            android:layout_width="352dp"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/toggle_broadcasting"
+            android:layout_alignBottom="@+id/animation_view"
             android:layout_alignParentStart="true"
             android:textColor="@android:color/white" />
         <!--<EditText-->
@@ -130,8 +131,18 @@
             android:layout_width="60dp"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_below="@+id/liveChatListview"
+            android:layout_alignTop="@+id/messageText"
             android:text="전송" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/animation_view"
+            android:layout_width="match_parent"
+            android:layout_height="316dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            app:lottie_autoPlay="false"
+            app:lottie_fileName="star_balloon.json"
+            app:lottie_loop="false" />
 
     </RelativeLayout>
 

@@ -15,9 +15,12 @@
  */
 package com.example.sdsyd.yvely.Broadcast.LivePlayer;
 
+import android.animation.Animator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
@@ -42,6 +45,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.sdsyd.yvely.Broadcast.LiveChatAdapter;
 import com.example.sdsyd.yvely.R;
 import com.example.sdsyd.yvely.Service.MyService;
@@ -132,8 +136,10 @@ public class LiveVideoPlayerActivity extends AppCompatActivity implements OnClic
   LiveChatAdapter adapter;
   ListView listView;
   EditText playerMessageText;
-  Button playerMessageSend;
+  Button playerMessageSend, sendBalloonBtn;
   String broadcasterId;
+  LottieAnimationView animationView;
+  EditText titleText = null; //별풍선 갯수를 입력받기위해 생성
 
   private Messenger serviceMessenger = null;
   boolean isBound = false; //서비스 중인지 확인하기 위해 선언
@@ -142,6 +148,7 @@ public class LiveVideoPlayerActivity extends AppCompatActivity implements OnClic
   String userId ;
 
   public static final String TYPE_USER_ADD = "USER_ADD";
+//  public static final String TYPE_STAR_BALLOON_SEND = "STAR_BALLOON_SEND";
 
 
   private ServiceConnection mConnection = new ServiceConnection() {
@@ -183,12 +190,23 @@ public class LiveVideoPlayerActivity extends AppCompatActivity implements OnClic
           try {
             JSONObject json = new JSONObject(receiveMsg);
               Log.d("SUNNY",  "플레이어 액티비티, 서비스로부터 메세지를 받는 부분" + json.get("MSG_TYPE").toString());
-            if(json.get("MSG_TYPE").toString().equals(TYPE_CHAT_MSG)) {
+              //별풍선 보냈을 경우 처리하는 부분
+            if(json.get("MSG_TYPE").toString().equals(TYPE_CHAT_MSG) && json.get("balloonType").toString().equals("1")) {
                 String getId = json.get("id").toString();
                 String getMsg = json.get("message").toString();
 
-                adapter.addItem(getId + " : ", getMsg);
-                adapter.notifyDataSetChanged();
+              adapter.addItem(getId + " : ","별풍선 " + getMsg + "개를 선물했습니다~!");
+              adapter.notifyDataSetChanged();
+
+              animationView.playAnimation(); //별풍선 애니메이션 플레이
+
+              //별풍선 보내지 않았을 경우 처리하는 부분
+            } else {
+              String getId = json.get("id").toString();
+              String getMsg = json.get("message").toString();
+
+              adapter.addItem(getId + " : ", getMsg);
+              adapter.notifyDataSetChanged();
             }
           } catch (JSONException e) {
             e.printStackTrace();
@@ -215,6 +233,54 @@ public class LiveVideoPlayerActivity extends AppCompatActivity implements OnClic
       }
     }
   }
+
+  //별풍선 갯수를 입력받는 다이얼로그
+  void show()
+  {
+    titleText = new EditText(this);
+    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    builder.setTitle("보낼 별풍선 갯수를 입력하세요!");
+    builder.setView(titleText);
+    builder.setPositiveButton("확인",
+            new DialogInterface.OnClickListener() {
+              public void onClick(DialogInterface dialog, int which) {
+
+                if (!titleText.getText().toString().isEmpty()) {
+
+                  JSONObject json = new JSONObject();
+
+                  try {
+
+                    json.put("MSG_TYPE", TYPE_CHAT_MSG);
+                    json.put("id", userId);
+                    json.put("message", titleText.getText().toString());
+                    json.put("balloonType", "1");
+                    json.put("broadcasterId", broadcasterId);
+
+                  } catch (JSONException e) {
+                    e.printStackTrace();
+                  }
+
+                  sendMessageToService(json.toString());
+                  adapter.addItem(userId + " : ","별풍선 " + titleText.getText().toString() + "개를 선물했습니다~!");
+                  adapter.notifyDataSetChanged();
+
+                  animationView.playAnimation();
+
+                } else {
+                  Toast.makeText(getApplicationContext(),"별풍선 갯수를 입력해주세요!",Toast.LENGTH_LONG).show();
+                }
+
+              }//onClick
+            });
+    builder.setNegativeButton("취소",
+            new DialogInterface.OnClickListener() {
+              public void onClick(DialogInterface dialog, int which) {
+
+              }
+            });
+    builder.show();
+  }//show
 
   // Activity lifecycle
   @Override
@@ -247,10 +313,11 @@ public class LiveVideoPlayerActivity extends AppCompatActivity implements OnClic
     simpleExoPlayerView.setControllerVisibilityListener(this);
     simpleExoPlayerView.requestFocus();
 
-    //채팅메세지 텍스트 및 전송 버튼
+    //채팅메세지 및 별풍선과 전송 버튼
     playerMessageText = findViewById(R.id.playerMessageText);
     playerMessageSend = findViewById(R.id.playerMessageSend);
-
+    sendBalloonBtn = findViewById(R.id.sendBalloonBtn);
+    animationView = findViewById(R.id.animation_view);
 
     /*리스트뷰 어뎁터 연결*/
     adapter = new LiveChatAdapter();
@@ -268,18 +335,22 @@ public class LiveVideoPlayerActivity extends AppCompatActivity implements OnClic
       String startTime = receive.getStringExtra("broadcastingStartTime");
       broadcasterId = receive.getStringExtra("broadcasterId");
       String vodUrl = receive.getStringExtra("vodUrl");
+
       if(vodUrl != null){
         initializePlayer(vodUrl);
+        //VOD 시청할 때는 채팅 메세지 입력창이 보일 필요가 없기에 GONE, 별풍선 버튼도 마찬가지!
+        sendBalloonBtn.setVisibility(View.GONE);
+        playerMessageSend.setVisibility(View.GONE);
+        playerMessageText.setVisibility(View.GONE);
       }
+
       //onCreate에서 바로 시작, 그 전에 streamname을 받아와야 한다.
       String URL = DASH_BASE_URL + startTime + broadcasterId + ".mpd";
       initializePlayer(URL);
 
-      //아이디
+      //아이디 가져오는 부분 (SharedPreferences 에서)
       member = getSharedPreferences("auto", Activity.MODE_PRIVATE);
       userId = member.getString("inputId", null);
-
-
 
     //플레이어가 메세지를 보내는 부분
     playerMessageSend.setOnClickListener(new OnClickListener() {
@@ -309,9 +380,38 @@ public class LiveVideoPlayerActivity extends AppCompatActivity implements OnClic
           playerMessageText.setText("");
         }
       }
+    });//playerMessageSend.setOnClickListener
+
+
+    sendBalloonBtn.setOnClickListener(new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            show();
+        }
     });
 
+    //별풍선 애니메이션 끝나면 사라지게 하기위해 이벤트 리스너를 설정
+    animationView.addAnimatorListener(new Animator.AnimatorListener() {
+        @Override
+        public void onAnimationStart(Animator animation) {
 
+        }
+
+        @Override
+        public void onAnimationEnd(Animator animation) {
+            animationView.setVisibility(View.GONE);
+        }
+
+        @Override
+        public void onAnimationCancel(Animator animation) {
+
+        }
+
+        @Override
+        public void onAnimationRepeat(Animator animation) {
+
+        }
+    });
 
   }/*onCreate*/
 
